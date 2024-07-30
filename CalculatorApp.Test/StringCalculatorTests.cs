@@ -109,6 +109,26 @@ namespace CalculatorApp.Test
             var result = _calculator.Add("2,1001");
             Assert.Equal(2, result);
         }
+        [Fact]
+        public void Add_CustomDelimiterWithMoreThanOneLength()
+        {
+            var result = _calculator.Add("//[***]\n1***2***3");
+            Assert.Equal(6, result);
+        }
+        [Fact]
+        public void Add_CustomDelimiterWithOneLength_WithBracket()
+        {
+            var result = _calculator.Add("//[*]\n1*2*3");
+            Assert.Equal(6, result);
+        }
+        [Fact]
+        public void Add_CustomDelimiterInValidFormat_ShouldThrowError()
+        {
+            Assert.Throws<FormatException>(() =>
+            {
+                _calculator.Add("//[**\n1**2");
+            });
+        }
     }
 
 }

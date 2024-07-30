@@ -30,7 +30,7 @@ namespace CalculatorApp
                 AddOccured(numbers, 0);
                 return 0;
             }
-            char delim = ',';
+            var delimiters = new List<string>() { "\n"};
             string orgNumbers = numbers;
             if (numbers.StartsWith("//"))
             {
@@ -38,14 +38,34 @@ namespace CalculatorApp
                 var delimiterIndex = numbers.IndexOf('\n');
                 // Getting substring which contains delimiter
                 var delimiter = numbers.Substring(2, delimiterIndex - 2);
+                Console.WriteLine(delimiter);
+                if(delimiter.Length > 1)
+                {
+                    //check if it contains square bracket
+                    if(delimiter.StartsWith('[') && delimiter.EndsWith(']'))
+                    {
+                        var delim = delimiter.Substring(1, delimiter.Length - 2);
+                        delimiters.Add(delim);
+                    }
+                    else
+                    {
+                        throw new FormatException("String is in wrong format please confirm the format");
+                    }
+                }
+                else
+                {
+                    // Changing delim to new delimiter
+                    delimiters.Add(delimiter);
+                }
                 // Removing extra values which are there for delimiter config.
                 numbers = numbers.Substring(delimiterIndex + 1);
-                // Changing delim to new delimiter
-                delim = delimiter[0];
+            }
+            else
+            {
+                delimiters.Add(",");
             }
 
-            var delimiters = new[] { delim, '\n' };
-            var parts = numbers.Split(delimiters, StringSplitOptions.TrimEntries);
+            var parts = numbers.Split(delimiters.ToArray(), StringSplitOptions.TrimEntries);
             ValidateNumbers(parts);
             int ans = parts.Where(n=>int.Parse(n) <=1000).Sum(int.Parse);
             AddOccured(orgNumbers, ans);
