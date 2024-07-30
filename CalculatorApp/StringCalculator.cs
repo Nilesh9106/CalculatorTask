@@ -13,7 +13,7 @@ namespace CalculatorApp
     public class StringCalculator
     {
         private int _callCount = 0;
-        public event Action<string, int> AddOccured;
+        public event Action<string, int>? AddOccured;
 
         /// <summary>
         /// Adds numbers provided in a delimited string format.
@@ -27,7 +27,10 @@ namespace CalculatorApp
             _callCount++;
             if (string.IsNullOrEmpty(numbers))
             {
-                AddOccured(numbers, 0);
+                if(AddOccured != null)
+                {
+                    AddOccured(numbers, 0);
+                }
                 return 0;
             }
             var delimiters = new List<string>() { "\n"};
@@ -38,13 +41,14 @@ namespace CalculatorApp
                 var delimiterIndex = numbers.IndexOf('\n');
                 // Getting substring which contains delimiter
                 var delimiter = numbers.Substring(2, delimiterIndex - 2);
-                Console.WriteLine(delimiter);
                 if(delimiter.Length > 1)
                 {
                     //check if it contains square bracket
                     if(delimiter.StartsWith('[') && delimiter.EndsWith(']'))
                     {
+                        // removing first and last square brackets
                         var delimString = delimiter.Substring(1, delimiter.Length - 2);
+                        // if there are multiple delimiters then will split by brackets
                         var delims = delimString.Split("][");
                         delimiters.AddRange(delims);
                     }
@@ -65,11 +69,16 @@ namespace CalculatorApp
             {
                 delimiters.Add(",");
             }
-
+            // spliting numbers by delimiters
             var parts = numbers.Split(delimiters.ToArray(), StringSplitOptions.TrimEntries);
+            // validating negetive numbers
             ValidateNumbers(parts);
+            // calculating sum ignoring value bigger than 1000
             int ans = parts.Where(n=>int.Parse(n) <=1000).Sum(int.Parse);
-            AddOccured(orgNumbers, ans);
+            if (AddOccured != null)
+            {
+                AddOccured(orgNumbers, ans);
+            }
             return ans;
         }
 

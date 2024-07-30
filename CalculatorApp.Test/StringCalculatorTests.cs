@@ -13,7 +13,7 @@ namespace CalculatorApp.Test
     public class StringCalculatorTests
     {
         private readonly StringCalculator _calculator;
-        string givenInput = null;
+        string? givenInput = null;
         int givenResult = 0;
         public StringCalculatorTests()
         {
