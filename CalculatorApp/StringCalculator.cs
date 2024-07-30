@@ -44,8 +44,9 @@ namespace CalculatorApp
                     //check if it contains square bracket
                     if(delimiter.StartsWith('[') && delimiter.EndsWith(']'))
                     {
-                        var delim = delimiter.Substring(1, delimiter.Length - 2);
-                        delimiters.Add(delim);
+                        var delimString = delimiter.Substring(1, delimiter.Length - 2);
+                        var delims = delimString.Split("][");
+                        delimiters.AddRange(delims);
                     }
                     else
                     {

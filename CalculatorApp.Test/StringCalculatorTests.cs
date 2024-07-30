@@ -129,6 +129,21 @@ namespace CalculatorApp.Test
                 _calculator.Add("//[**\n1**2");
             });
         }
+        [Fact]
+        public void Add_MultipleSingleCharacterDelimiters_ReturnsSum()
+        {
+            var result = _calculator.Add("//[*][%]\n1*2%3");
+
+            Assert.Equal(6, result);
+        }
+
+        [Fact]
+        public void Add_MultipleMultiCharacterDelimiters_ReturnsSum()
+        {
+            var result = _calculator.Add("//[**][%%]\n1**2%%3");
+
+            Assert.Equal(6, result);
+        }
     }
 
 }
