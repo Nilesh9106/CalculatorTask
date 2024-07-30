@@ -47,7 +47,7 @@ namespace CalculatorApp
             var delimiters = new[] { delim, '\n' };
             var parts = numbers.Split(delimiters, StringSplitOptions.TrimEntries);
             ValidateNumbers(parts);
-            int ans = parts.Sum(int.Parse);
+            int ans = parts.Where(n=>int.Parse(n) <=1000).Sum(int.Parse);
             AddOccured(orgNumbers, ans);
             return ans;
         }

@@ -103,6 +103,12 @@ namespace CalculatorApp.Test
             Assert.Equal(input, givenInput);
             Assert.Equal(expectedResult, givenResult);
         }
+        [Fact]
+        public void Add_ShouldIgnoreNumberBiggerThan1000()
+        {
+            var result = _calculator.Add("2,1001");
+            Assert.Equal(2, result);
+        }
     }
 
 }
