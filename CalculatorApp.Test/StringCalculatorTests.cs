@@ -55,6 +55,12 @@ namespace CalculatorApp.Test
             var result = _calculator.Add("//;\n1;2");
             Assert.Equal(3, result);
         }
+        [Fact]
+        public void Add_NegativeNumber_ThrowsException()
+        {
+            var ex = Assert.Throws<ArgumentException>(() => _calculator.Add("1,-2,3"));
+            Assert.Equal("negatives not allowed: -2", ex.Message);
+        }
     }
 
 }

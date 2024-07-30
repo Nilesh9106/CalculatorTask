@@ -29,9 +29,17 @@ namespace CalculatorApp
 
             var delimiters = new[] { delim, '\n' };
             var parts = numbers.Split(delimiters, StringSplitOptions.TrimEntries);
+            ValidateNumbers(parts);
             return parts.Sum(int.Parse);
         }
-
+        private void ValidateNumbers(string[] numbers)
+        {
+            var negatives = numbers.Where(n => int.Parse(n) < 0).ToList();
+            if (negatives.Any())
+            {
+                throw new ArgumentException("negatives not allowed: " + string.Join(", ", negatives));
+            }
+        }
     }
 
 }
