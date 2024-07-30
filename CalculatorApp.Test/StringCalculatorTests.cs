@@ -49,6 +49,12 @@ namespace CalculatorApp.Test
                 _calculator.Add("1,\n ");
             });
         }
+        [Fact]
+        public void Add_CustomDelimiter_ReturnsSum()
+        {
+            var result = _calculator.Add("//;\n1;2");
+            Assert.Equal(3, result);
+        }
     }
 
 }
