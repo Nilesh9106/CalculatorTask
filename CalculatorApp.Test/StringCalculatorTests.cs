@@ -18,7 +18,7 @@ namespace CalculatorApp.Test
         public StringCalculatorTests()
         {
             _calculator = new StringCalculator();
-            _calculator.AddOccured += delegate (string input, int result)
+            _calculator.AddOccurred += delegate (string input, int result)
             {
                 givenInput = input;
                 givenResult = result;

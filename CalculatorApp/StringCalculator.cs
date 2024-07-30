@@ -13,7 +13,7 @@ namespace CalculatorApp
     public class StringCalculator
     {
         private int _callCount = 0;
-        public event Action<string, int>? AddOccured;
+        public event Action<string, int>? AddOccurred;
 
         /// <summary>
         /// Adds numbers provided in a delimited string format.
@@ -21,35 +21,35 @@ namespace CalculatorApp
         /// <param name="numbers">A string containing numbers separated by delimiters.</param>
         /// <returns>The sum of the numbers in the string.</returns>
         /// <exception cref="ArgumentException">Thrown when negative numbers are found in the input string.</exception>
-        /// <exception cref="FormatException">Thrown when nonnumeric numbers are found in the input string.</exception>
+        /// <exception cref="FormatException">Thrown when nonnumeric numbers are found in the input string or wrong formatted string found.</exception>
         public int Add(string numbers)
         {
             _callCount++;
             if (string.IsNullOrEmpty(numbers))
             {
-                if(AddOccured != null)
+                if(AddOccurred != null)
                 {
-                    AddOccured(numbers, 0);
+                    AddOccurred(numbers, 0);
                 }
                 return 0;
             }
             var delimiters = new List<string>() { "\n"};
-            string orgNumbers = numbers;
+            string originalNumbers = numbers;
             if (numbers.StartsWith("//"))
             {
                 // Getting index of \n to get delimiter
-                var delimiterIndex = numbers.IndexOf('\n');
+                var delimiterEndIndex = numbers.IndexOf('\n');
                 // Getting substring which contains delimiter
-                var delimiter = numbers.Substring(2, delimiterIndex - 2);
-                if(delimiter.Length > 1)
+                var delimiterString = numbers.Substring(2, delimiterEndIndex - 2);
+                if(delimiterString.Length > 1)
                 {
                     //check if it contains square bracket
-                    if(delimiter.StartsWith('[') && delimiter.EndsWith(']'))
+                    if(delimiterString.StartsWith('[') && delimiterString.EndsWith(']'))
                     {
                         // removing first and last square brackets
-                        var delimString = delimiter.Substring(1, delimiter.Length - 2);
+                        var delimiterStringWithoutBrackets = delimiterString.Substring(1, delimiterString.Length - 2);
                         // if there are multiple delimiters then will split by brackets
-                        var delims = delimString.Split("][");
+                        var delims = delimiterStringWithoutBrackets.Split("][");
                         delimiters.AddRange(delims);
                     }
                     else
@@ -59,25 +59,21 @@ namespace CalculatorApp
                 }
                 else
                 {
-                    // Changing delim to new delimiter
-                    delimiters.Add(delimiter);
+                    delimiters.Add(delimiterString);
                 }
                 // Removing extra values which are there for delimiter config.
-                numbers = numbers.Substring(delimiterIndex + 1);
+                numbers = numbers.Substring(delimiterEndIndex + 1);
             }
             else
             {
                 delimiters.Add(",");
             }
-            // spliting numbers by delimiters
             var parts = numbers.Split(delimiters.ToArray(), StringSplitOptions.TrimEntries);
-            // validating negetive numbers
-            ValidateNumbers(parts);
-            // calculating sum ignoring value bigger than 1000
+            CheckNegativeNumbers(parts);
             int ans = parts.Where(n=>int.Parse(n) <=1000).Sum(int.Parse);
-            if (AddOccured != null)
+            if (AddOccurred != null)
             {
-                AddOccured(orgNumbers, ans);
+                AddOccurred(originalNumbers, ans);
             }
             return ans;
         }
@@ -96,7 +92,7 @@ namespace CalculatorApp
         /// </summary>
         /// <param name="numbers">An array of number strings to validate.</param>
         /// <exception cref="ArgumentException">Thrown when negative numbers are found in the input array.</exception>
-        private void ValidateNumbers(string[] numbers)
+        private void CheckNegativeNumbers(string[] numbers)
         {
             var negatives = numbers.Where(n => int.Parse(n) < 0).ToList();
             if (negatives.Any())
