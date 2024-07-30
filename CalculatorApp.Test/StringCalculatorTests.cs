@@ -3,16 +3,26 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Xunit;
 
 namespace CalculatorApp.Test
 {
+    /// <summary>
+    /// Unit tests for the <see cref="StringCalculator"/> class.
+    /// </summary>
     public class StringCalculatorTests
     {
         private readonly StringCalculator _calculator;
-
+        string givenInput = null;
+        int givenResult = 0;
         public StringCalculatorTests()
         {
             _calculator = new StringCalculator();
+            _calculator.AddOccured += delegate (string input, int result)
+            {
+                givenInput = input;
+                givenResult = result;
+            };
         }
 
         [Fact]
@@ -81,6 +91,17 @@ namespace CalculatorApp.Test
             _calculator.Add("3,4");
             _calculator.Add("5,6");
             Assert.Equal(3, _calculator.GetCalledCount());
+        }
+        [Fact]
+        public void Add_ShouldTriggerAddOccuredEvent()
+        {
+            var input = "1,2";
+            var expectedResult = 3;
+
+            _calculator.Add(input);
+
+            Assert.Equal(input, givenInput);
+            Assert.Equal(expectedResult, givenResult);
         }
     }
 
