@@ -35,7 +35,20 @@ namespace CalculatorApp.Test
             var result = _calculator.Add("1,2");
             Assert.Equal(3, result);
         }
-
+        [Fact]
+        public void Add_MultipleNumbers_ReturnsSum()
+        {
+            var result = _calculator.Add("1\n2,3");
+            Assert.Equal(6, result);
+        }
+        [Fact]
+        public void Add_InValidNumber_ThrowError()
+        {
+            Assert.Throws<FormatException>(() =>
+            {
+                _calculator.Add("1,\n ");
+            });
+        }
     }
 
 }

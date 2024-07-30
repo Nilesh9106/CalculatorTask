@@ -8,16 +8,18 @@ namespace CalculatorApp
 {
     public class StringCalculator
     {
-            public int Add(string numbers)
+        public int Add(string numbers)
+        {
+            if (string.IsNullOrEmpty(numbers))
             {
-                if (string.IsNullOrEmpty(numbers))
-                {
-                    return 0;
-                }
-
-                var parts = numbers.Split(',');
-                return parts.Sum(int.Parse);
+                return 0;
             }
+
+            var delimiters = new[] { ',', '\n' };
+            var parts = numbers.Split(delimiters, StringSplitOptions.TrimEntries);
+            return parts.Sum(int.Parse);
+        }
+
     }
 
 }
