@@ -8,8 +8,11 @@ namespace CalculatorApp
 {
     public class StringCalculator
     {
+        private int _callCount = 0;
+
         public int Add(string numbers)
         {
+            _callCount++;
             if (string.IsNullOrEmpty(numbers))
             {
                 return 0;
@@ -31,6 +34,10 @@ namespace CalculatorApp
             var parts = numbers.Split(delimiters, StringSplitOptions.TrimEntries);
             ValidateNumbers(parts);
             return parts.Sum(int.Parse);
+        }
+        public int GetCalledCount()
+        {
+            return _callCount;
         }
         private void ValidateNumbers(string[] numbers)
         {

@@ -61,6 +61,27 @@ namespace CalculatorApp.Test
             var ex = Assert.Throws<ArgumentException>(() => _calculator.Add("1,-2,3"));
             Assert.Equal("negatives not allowed: -2", ex.Message);
         }
+        [Fact]
+        public void GetCalledCount_Initially_ReturnsZero()
+        {
+            Assert.Equal(0, _calculator.GetCalledCount());
+        }
+
+        [Fact]
+        public void GetCalledCount_AfterOneAddCall_ReturnsOne()
+        {
+            _calculator.Add("1,2");
+            Assert.Equal(1, _calculator.GetCalledCount());
+        }
+
+        [Fact]
+        public void GetCalledCount_AfterMultipleAddCalls_ReturnsCorrectCount()
+        {
+            _calculator.Add("1,2");
+            _calculator.Add("3,4");
+            _calculator.Add("5,6");
+            Assert.Equal(3, _calculator.GetCalledCount());
+        }
     }
 
 }
