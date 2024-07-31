@@ -27,13 +27,13 @@ namespace CalculatorApp
             _callCount++;
             if (string.IsNullOrEmpty(numbers))
             {
-                if(AddOccurred != null)
+                if (AddOccurred != null)
                 {
                     AddOccurred(numbers, 0);
                 }
                 return 0;
             }
-            var delimiters = new List<string>() { "\n"};
+            var delimiters = new List<string>() { "\n" };
             string originalNumbers = numbers;
             if (numbers.StartsWith("//"))
             {
@@ -41,26 +41,9 @@ namespace CalculatorApp
                 var delimiterEndIndex = numbers.IndexOf('\n');
                 // Getting substring which contains delimiter
                 var delimiterString = numbers.Substring(2, delimiterEndIndex - 2);
-                if(delimiterString.Length > 1)
-                {
-                    //check if it contains square bracket
-                    if(delimiterString.StartsWith('[') && delimiterString.EndsWith(']'))
-                    {
-                        // removing first and last square brackets
-                        var delimiterStringWithoutBrackets = delimiterString.Substring(1, delimiterString.Length - 2);
-                        // if there are multiple delimiters then will split by brackets
-                        var delims = delimiterStringWithoutBrackets.Split("][");
-                        delimiters.AddRange(delims);
-                    }
-                    else
-                    {
-                        throw new FormatException("String is in wrong format please confirm the format");
-                    }
-                }
-                else
-                {
-                    delimiters.Add(delimiterString);
-                }
+                // Extracting Delimiters from string
+                var delims = ExtractDelimitersFromString(delimiterString);
+                delimiters.AddRange(delims);
                 // Removing extra values which are there for delimiter config.
                 numbers = numbers.Substring(delimiterEndIndex + 1);
             }
@@ -70,7 +53,7 @@ namespace CalculatorApp
             }
             var parts = numbers.Split(delimiters.ToArray(), StringSplitOptions.TrimEntries);
             CheckNegativeNumbers(parts);
-            int ans = parts.Where(n=>int.Parse(n) <=1000).Sum(int.Parse);
+            int ans = parts.Where(n => int.Parse(n) <= 1000).Sum(int.Parse);
             if (AddOccurred != null)
             {
                 AddOccurred(originalNumbers, ans);
@@ -99,6 +82,38 @@ namespace CalculatorApp
             {
                 throw new ArgumentException("negatives not allowed: " + string.Join(", ", negatives));
             }
+        }
+        /// <summary>
+        /// Extracts the delimiters from the delimiter string.
+        /// </summary>
+        /// <param name="delimiterString">String that contains Delimiters</param>
+        /// <returns>List of Delimiters</returns>
+        /// <exception cref="FormatException">Thrown if wrong format string is given</exception>
+        private List<string> ExtractDelimitersFromString(string delimiterString)
+        {
+            var delimiters = new List<string>();
+
+            if (delimiterString.Length > 1)
+            {
+                //check if it contains square bracket
+                if (delimiterString.StartsWith('[') && delimiterString.EndsWith(']'))
+                {
+                    // removing first and last square brackets
+                    var delimiterStringWithoutBrackets = delimiterString.Substring(1, delimiterString.Length - 2);
+                    // if there are multiple delimiters then will split by brackets
+                    var delims = delimiterStringWithoutBrackets.Split("][");
+                    delimiters.AddRange(delims);
+                }
+                else
+                {
+                    throw new FormatException("String is in wrong format please confirm the format");
+                }
+            }
+            else
+            {
+                delimiters.Add(delimiterString);
+            }
+            return delimiters;
         }
     }
 }
