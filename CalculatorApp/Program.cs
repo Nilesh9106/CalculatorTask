@@ -17,7 +17,7 @@ class Program
 
             try
             {
-                var result = calculator.Add(input ?? "");
+                var result = calculator.Calculate(input ?? "");
                 Console.WriteLine($"Result: {result}");
             }
             catch (Exception ex)

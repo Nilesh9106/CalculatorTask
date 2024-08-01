@@ -18,7 +18,7 @@ namespace CalculatorApp.Test
         public StringCalculatorTests()
         {
             _calculator = new StringCalculator();
-            _calculator.AddOccurred += delegate (string input, int result)
+            _calculator.CalculateOccurred += delegate (string input, int result)
             {
                 givenInput = input;
                 givenResult = result;
@@ -28,27 +28,27 @@ namespace CalculatorApp.Test
         [Fact]
         public void Add_EmptyString_ReturnsZero()
         {
-            var result = _calculator.Add("");
+            var result = _calculator.Calculate("");
             Assert.Equal(0, result);
         }
 
         [Fact]
         public void Add_SingleNumber_ReturnsNumber()
         {
-            var result = _calculator.Add("1");
+            var result = _calculator.Calculate("1");
             Assert.Equal(1, result);
         }
 
         [Fact]
         public void Add_TwoNumbers_ReturnsSum()
         {
-            var result = _calculator.Add("1,2");
+            var result = _calculator.Calculate("1,2");
             Assert.Equal(3, result);
         }
         [Fact]
         public void Add_MultipleNumbers_ReturnsSum()
         {
-            var result = _calculator.Add("1\n2,3");
+            var result = _calculator.Calculate("1\n2,3");
             Assert.Equal(6, result);
         }
         [Fact]
@@ -56,19 +56,19 @@ namespace CalculatorApp.Test
         {
             Assert.Throws<FormatException>(() =>
             {
-                _calculator.Add("1,\n ");
+                _calculator.Calculate("1,\n ");
             });
         }
         [Fact]
         public void Add_CustomDelimiter_ReturnsSum()
         {
-            var result = _calculator.Add("//;\n1;2");
+            var result = _calculator.Calculate("//;\n1;2");
             Assert.Equal(3, result);
         }
         [Fact]
         public void Add_NegativeNumber_ThrowsException()
         {
-            var ex = Assert.Throws<ArgumentException>(() => _calculator.Add("1,-2,3"));
+            var ex = Assert.Throws<ArgumentException>(() => _calculator.Calculate("1,-2,3"));
             Assert.Equal("negatives not allowed: -2", ex.Message);
         }
         [Fact]
@@ -80,16 +80,16 @@ namespace CalculatorApp.Test
         [Fact]
         public void GetCalledCount_AfterOneAddCall_ReturnsOne()
         {
-            _calculator.Add("1,2");
+            _calculator.Calculate("1,2");
             Assert.Equal(1, _calculator.GetCalledCount());
         }
 
         [Fact]
         public void GetCalledCount_AfterMultipleAddCalls_ReturnsCorrectCount()
         {
-            _calculator.Add("1,2");
-            _calculator.Add("3,4");
-            _calculator.Add("5,6");
+            _calculator.Calculate("1,2");
+            _calculator.Calculate("3,4");
+            _calculator.Calculate("5,6");
             Assert.Equal(3, _calculator.GetCalledCount());
         }
         [Fact]
@@ -98,7 +98,7 @@ namespace CalculatorApp.Test
             var input = "1,2";
             var expectedResult = 3;
 
-            _calculator.Add(input);
+            _calculator.Calculate(input);
 
             Assert.Equal(input, givenInput);
             Assert.Equal(expectedResult, givenResult);
@@ -106,19 +106,19 @@ namespace CalculatorApp.Test
         [Fact]
         public void Add_ShouldIgnoreNumberBiggerThan1000()
         {
-            var result = _calculator.Add("2,1001");
+            var result = _calculator.Calculate("2,1001");
             Assert.Equal(2, result);
         }
         [Fact]
         public void Add_CustomDelimiterWithMoreThanOneLength()
         {
-            var result = _calculator.Add("//[***]\n1***2***3");
+            var result = _calculator.Calculate("//[***]\n1***2***3");
             Assert.Equal(6, result);
         }
         [Fact]
         public void Add_CustomDelimiterWithOneLength_WithBracket()
         {
-            var result = _calculator.Add("//[*]\n1*2*3");
+            var result = _calculator.Calculate("//[*]\n1*2*3");
             Assert.Equal(6, result);
         }
         [Fact]
@@ -126,13 +126,13 @@ namespace CalculatorApp.Test
         {
             Assert.Throws<FormatException>(() =>
             {
-                _calculator.Add("//[**\n1**2");
+                _calculator.Calculate("//[**\n1**2");
             });
         }
         [Fact]
         public void Add_MultipleSingleCharacterDelimiters_ReturnsSum()
         {
-            var result = _calculator.Add("//[*][%]\n1*2%3");
+            var result = _calculator.Calculate("//[*][%]\n1*2%3");
 
             Assert.Equal(6, result);
         }
@@ -140,8 +140,14 @@ namespace CalculatorApp.Test
         [Fact]
         public void Add_MultipleMultiCharacterDelimiters_ReturnsSum()
         {
-            var result = _calculator.Add("//[**][%%]\n1**2%%3");
+            var result = _calculator.Calculate("//[**][%%]\n1**2%%3");
 
+            Assert.Equal(6, result);
+        }
+        [Fact]
+        public void Multiply_Numbers()
+        {
+            var result = _calculator.Calculate("1,2,3", "*");
             Assert.Equal(6, result);
         }
     }

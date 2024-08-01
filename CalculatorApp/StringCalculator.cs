@@ -13,7 +13,7 @@ namespace CalculatorApp
     public class StringCalculator
     {
         private int _callCount = 0;
-        public event Action<string, int>? AddOccurred;
+        public event Action<string, int>? CalculateOccurred;
 
         /// <summary>
         /// Adds numbers provided in a delimited string format.
@@ -22,14 +22,14 @@ namespace CalculatorApp
         /// <returns>The sum of the numbers in the string.</returns>
         /// <exception cref="ArgumentException">Thrown when negative numbers are found in the input string.</exception>
         /// <exception cref="FormatException">Thrown when nonnumeric numbers are found in the input string or wrong formatted string found.</exception>
-        public int Add(string numbers)
+        public int Calculate(string numbers, string operation = "+")
         {
             _callCount++;
             if (string.IsNullOrEmpty(numbers))
             {
-                if (AddOccurred != null)
+                if (CalculateOccurred != null)
                 {
-                    AddOccurred(numbers, 0);
+                    CalculateOccurred(numbers, 0);
                 }
                 return 0;
             }
@@ -53,10 +53,20 @@ namespace CalculatorApp
             }
             var parts = numbers.Split(delimiters.ToArray(), StringSplitOptions.TrimEntries);
             CheckNegativeNumbers(parts);
-            int ans = parts.Where(n => int.Parse(n) <= 1000).Sum(int.Parse);
-            if (AddOccurred != null)
+            int ans = 0;
+            switch (operation)
             {
-                AddOccurred(originalNumbers, ans);
+                case "*":
+                    ans = Multiply(parts);
+                    break;
+                default:
+                    ans = parts.Where(n => int.Parse(n) <= 1000).Sum(int.Parse);
+                    break;
+            }
+
+            if (CalculateOccurred != null)
+            {
+                CalculateOccurred(originalNumbers, ans);
             }
             return ans;
         }
@@ -68,6 +78,19 @@ namespace CalculatorApp
         public int GetCalledCount()
         {
             return _callCount;
+        }
+        public int Multiply(string[] parts)
+        {
+            int ans = 1;
+            foreach (var part in parts)
+            {
+                int num = int.Parse(part);
+                if (num <= 1000)
+                {
+                    ans *= num;
+                }
+            }
+            return ans;
         }
 
         /// <summary>
