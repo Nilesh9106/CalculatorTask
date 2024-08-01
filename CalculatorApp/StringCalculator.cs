@@ -33,24 +33,9 @@ namespace CalculatorApp
                 }
                 return 0;
             }
-            var delimiters = new List<string>() { "\n" };
             string originalNumbers = numbers;
-            if (numbers.StartsWith("//"))
-            {
-                // Getting index of \n to get delimiter
-                var delimiterEndIndex = numbers.IndexOf('\n');
-                // Getting substring which contains delimiter
-                var delimiterString = numbers.Substring(2, delimiterEndIndex - 2);
-                // Extracting Delimiters from string
-                var delims = ExtractDelimitersFromString(delimiterString);
-                delimiters.AddRange(delims);
-                // Removing extra values which are there for delimiter config.
-                numbers = numbers.Substring(delimiterEndIndex + 1);
-            }
-            else
-            {
-                delimiters.Add(",");
-            }
+            var delimiters = ExtractDelimitersFromString(ref numbers);
+
             var parts = numbers.Split(delimiters.ToArray(), StringSplitOptions.TrimEntries);
             CheckNegativeNumbers(parts);
             int ans = 0;
@@ -112,29 +97,36 @@ namespace CalculatorApp
         /// <param name="delimiterString">String that contains Delimiters</param>
         /// <returns>List of Delimiters</returns>
         /// <exception cref="FormatException">Thrown if wrong format string is given</exception>
-        private List<string> ExtractDelimitersFromString(string delimiterString)
+        private List<string> ExtractDelimitersFromString(ref string numbers)
         {
-            var delimiters = new List<string>();
+            var delimiters = new List<string>() { "\n" };
 
-            if (delimiterString.Length > 1)
+            if (numbers.StartsWith("//"))
             {
-                //check if it contains square bracket
-                if (delimiterString.StartsWith('[') && delimiterString.EndsWith(']'))
+                var delimiterEndIndex = numbers.IndexOf('\n');
+                var delimiterString = numbers.Substring(2, delimiterEndIndex - 2);
+                if (delimiterString.Length > 1)
                 {
-                    // removing first and last square brackets
-                    var delimiterStringWithoutBrackets = delimiterString.Substring(1, delimiterString.Length - 2);
-                    // if there are multiple delimiters then will split by brackets
-                    var delims = delimiterStringWithoutBrackets.Split("][");
-                    delimiters.AddRange(delims);
+                    if (delimiterString.StartsWith('[') && delimiterString.EndsWith(']'))
+                    {
+                        var delimiterStringWithoutBrackets = delimiterString.Substring(1, delimiterString.Length - 2);
+                        var delims = delimiterStringWithoutBrackets.Split("][");
+                        delimiters.AddRange(delims);
+                    }
+                    else
+                    {
+                        throw new FormatException("String is in wrong format please confirm the format");
+                    }
                 }
                 else
                 {
-                    throw new FormatException("String is in wrong format please confirm the format");
+                    delimiters.Add(delimiterString);
                 }
+                numbers = numbers.Substring(delimiterEndIndex + 1);
             }
             else
             {
-                delimiters.Add(delimiterString);
+                delimiters.Add(",");
             }
             return delimiters;
         }
